@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="職業訓練校ヒートウェーブで学んだ内容、演習経験、現在の課題を事実に沿ってまとめた新人プログラマー御福巡の自己紹介ページです。"
+    />
+    <meta name="theme-color" content="#dce8ef" />
+    <title>御福 巡｜Junior Programmer</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">本文へ移動</a>
+
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="ページの先頭へ">
+        <span class="brand-name">御福<br />巡</span>
+        <span class="brand-role">Junior Programmer</span>
+      </a>
+      <button
+        class="menu-button"
+        type="button"
+        aria-expanded="false"
+        aria-controls="global-navigation"
+        data-menu-button
+      >
+        <span class="sr-only">メニューを開く</span><span></span><span></span>
+      </button>
+      <nav
+        class="global-nav"
+        id="global-navigation"
+        aria-label="メインナビゲーション"
+        data-nav
+      >
+        <a href="#profile">Profile</a>
+        <a href="#mindset">Approach</a>
+        <a href="#curriculum">Curriculum</a>
+        <a href="#practice">Practice</a>
+        <a href="#evidence">Evidence</a>
+        <a href="#message">Message</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="orbit orbit-a" aria-hidden="true"></div>
+        <div class="orbit orbit-b" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span aria-hidden="true"></span> LEARNING JAVA & PYTHON / CAREER START
+          </p>
+          <h1 id="hero-title">
+            学んだことを、<br /><span>ひとつずつ</span><br />形にしていく。
+          </h1>
+          <p class="hero-lead">
+            IT分野での実務経験はまだありません。職業訓練校ヒートウェーブで、Java、Python、SQL、Web技術と開発工程の基礎を学びました。
+            このページでは、現在できることを大きく見せず、学習した内容とこれから取り組む課題を具体的に紹介します。
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#curriculum"
+              >学習内容を見る <span aria-hidden="true">↗</span></a
+            >
+            <a class="text-link" href="#profile"
+              >現在地を見る <span aria-hidden="true">↓</span></a
+            >
+          </div>
+        </div>
+        <div
+          class="hero-visual"
+          aria-label="若手プログラマーの人物イラスト"
+        >
+          <div class="portrait-arch">
+            <img
+              src="./assets/junior-programmer-hero.png"
+              alt="笑顔で両手を広げる20代の新人プログラマー"
+              width="1098"
+              height="1433"
+              fetchpriority="high"
+              decoding="async"
+            />
+          </div>
+          <p class="hero-signature" aria-hidden="true">
+            Learning<br /><i>in progress.</i>
+          </p>
+          <div class="status-badge">
+            <strong>Basic</strong><span>Java + Python<br />職業訓練で学習</span>
+          </div>
+        </div>
+        <p class="scroll-note" aria-hidden="true">
+          SCROLL TO EXPLORE <span>↓</span>
+        </p>
+      </section>
+
+      <section
+        class="section profile"
+        id="profile"
+        aria-labelledby="profile-title"
+      >
+        <div class="section-heading reveal">
+          <p class="eyebrow">01 / PROFILE</p>
+          <h2 id="profile-title">
+            現在地を正直に、<br />これからを具体的に。
+          </h2>
+        </div>
+        <div class="profile-grid">
+          <div class="profile-copy reveal">
+            <p class="drop-cap">
+              20代の新人プログラマーです。IT分野での実務経験はまだありませんが、プログラマーとして働くために職業訓練校で基礎から学び、Java・PythonによるプログラミングやWeb制作、データベース操作に取り組みました。
+            </p>
+            <p>
+              現在の知識は基礎段階です。入社後は、まず指示と仕様を正確に確認し、テストや簡単な修正などから経験を積みたいと考えています。分からない点は整理して相談し、教わった内容を記録して、同じ課題を少しずつ自分で解決できる状態を目指します。
+            </p>
+          </div>
+          <dl class="profile-facts reveal">
+            <div>
+              <dt>Name</dt>
+              <dd>御福 巡</dd>
+            </div>
+            <div>
+              <dt>Generation</dt>
+              <dd>20代</dd>
+            </div>
+            <div>
+              <dt>Role</dt>
+              <dd>新人プログラマー／エンジニア志望</dd>
+            </div>
+            <div>
+              <dt>Experience</dt>
+              <dd>実務未経験・職業訓練修了</dd>
+            </div>
+            <div>
+              <dt>School</dt>
+              <dd>職業訓練校 ヒートウェーブ</dd>
+            </div>
+            <div>
+              <dt>Learning</dt>
+              <dd>Java・Python・SQL・Web基礎</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="metrics reveal" aria-label="現在地の概要">
+          <article>
+            <strong>基礎</strong>
+            <p>Java・Python・SQL・Webを<br />職業訓練で学習</p>
+          </article>
+          <article>
+            <strong>演習</strong>
+            <p>設計・製造・テスト・発表の<br />流れを体験</p>
+          </article>
+          <article>
+            <strong>未経験</strong>
+            <p>実務経験はこれから<br />学習内容を仕事へつなげる段階</p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="section section-tint"
+        id="mindset"
+        aria-labelledby="mindset-title"
+      >
+        <div class="section-heading reveal">
+          <p class="eyebrow">02 / LEARNING APPROACH</p>
+          <h2 id="mindset-title">「強み」ではなく、<br />取り組み方を伝える。</h2>
+        </div>
+        <div class="mindset-grid">
+          <article class="mindset-card reveal">
+            <span>01</span>
+            <h3>分からない点を<br />整理する</h3>
+            <p>
+              「どこまで分かったか」「何を試したか」「どこで止まったか」を分けて考えます。質問するときにも状況を簡潔に説明できるよう心掛けます。
+            </p>
+          </article>
+          <article class="mindset-card featured reveal">
+            <span>02</span>
+            <h3>小さく動かし、<br />結果を確認する</h3>
+            <p>
+              一度に多くを変更せず、小さな単位でコードを実行します。期待した結果と実際の結果を比べ、エラーが出た場合は変更箇所を絞って確認します。
+            </p>
+          </article>
+          <article class="mindset-card reveal">
+            <span>03</span>
+            <h3>学んだことを<br />記録する</h3>
+            <p>
+              新しく知った用語、エラーの原因、解決までに試したことを記録します。次に同じ問題が起きたとき、記録を手掛かりに自分で対応できるようにします。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section
+        class="section curriculum"
+        id="curriculum"
+        aria-labelledby="curriculum-title"
+      >
+        <div class="section-heading reveal">
+          <p class="eyebrow">03 / CURRICULUM</p>
+          <h2 id="curriculum-title">職業訓練で学んだこと。</h2>
+          <p class="section-intro">
+            ヒートウェーブ「Java&Pythonシステム開発科」のカリキュラムを通じて、プログラミングだけでなく、Web、データベース、システム開発の流れを横断的に学びました。
+          </p>
+        </div>
+        <div class="curriculum-grid">
+          <article class="curriculum-card reveal">
+            <p class="card-label">JAVA</p>
+            <h3>Javaプログラミング</h3>
+            <p>
+              変数、配列、制御文、クラスとオブジェクト、オブジェクト指向、例外処理を学習。API、GUI、JSP／Servletを使った演習にも取り組みました。Springの学習を進めています。
+            </p>
+            <ul>
+              <li>オブジェクト指向</li>
+              <li>クラス設計</li>
+              <li>例外処理</li>
+              <li>JSP / Servlet</li>
+              <li>Spring（学習中）</li>
+            </ul>
+          </article>
+          <article class="curriculum-card reveal">
+            <p class="card-label">PYTHON</p>
+            <h3>Pythonプログラミング</h3>
+            <p>
+              変数とデータ型から、コレクション、条件分岐、関数、オブジェクト、モジュールまで、プログラムを組み立てる基礎を学びました。インベーダーゲームの開発を行っています。
+            </p>
+            <ul>
+              <li>データ型</li>
+              <li>コレクション</li>
+              <li>関数</li>
+              <li>モジュール</li>
+              <li>ゲーム開発（実践中）</li>
+            </ul>
+          </article>
+          <article class="curriculum-card reveal">
+            <p class="card-label">DATABASE</p>
+            <h3>SQL・データベース</h3>
+            <p>
+              データの検索・追加・更新・削除、絞り込み、式と関数、集計、トランザクション、テーブル作成を演習しました。
+            </p>
+            <ul>
+              <li>CRUD</li>
+              <li>集計</li>
+              <li>トランザクション</li>
+              <li>テーブル作成</li>
+            </ul>
+          </article>
+          <article class="curriculum-card reveal">
+            <p class="card-label">WEB</p>
+            <h3>Webプログラミング</h3>
+            <p>
+              HTMLによる文書構造、CSSによる装飾とレイアウト、JavaScriptの変数・演算子・条件分岐・基本メソッドを学びました。
+            </p>
+            <ul>
+              <li>HTML</li>
+              <li>CSS</li>
+              <li>JavaScript</li>
+              <li>レスポンシブ基礎</li>
+            </ul>
+          </article>
+          <article class="curriculum-card reveal">
+            <p class="card-label">COMPUTER</p>
+            <h3>コンピューター基礎</h3>
+            <p>
+              ハードウェアとソフトウェアの役割を学び、プログラムが動作する土台を理解しました。操作だけで終わらず、仕組みを意識して学習しています。
+            </p>
+            <ul>
+              <li>ハードウェア</li>
+              <li>ソフトウェア</li>
+              <li>開発環境</li>
+              <li>IT基礎</li>
+            </ul>
+          </article>
+          <article class="curriculum-card reveal">
+            <p class="card-label">DEVELOPMENT</p>
+            <h3>システム開発工程</h3>
+            <p>
+              課題に沿って、要件定義、概要・詳細設計、製造、評価、結合テスト、プロジェクト管理、成果発表までの一連の流れを経験しました。
+            </p>
+            <ul>
+              <li>要件定義</li>
+              <li>設計</li>
+              <li>製造</li>
+              <li>テスト</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="practice" id="practice" aria-labelledby="practice-title">
+        <div class="practice-inner section">
+          <div class="section-heading reveal">
+            <p class="eyebrow">04 / PRACTICE</p>
+            <h2 id="practice-title">総合演習で、<br />開発の流れを実践。</h2>
+          </div>
+          <ol class="process reveal">
+            <li>
+              <span>01</span>
+              <div>
+                <p>UNDERSTAND</p>
+                <h3>課題と要件を理解する</h3>
+                <p>
+                  何を作るのか、利用者にとって何が必要かを整理し、開発の目的を確認します。
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <p>DESIGN</p>
+                <h3>概要・詳細を設計する</h3>
+                <p>
+                  処理の流れやデータの扱いを検討し、実装前に必要な仕様を具体化します。
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <p>BUILD & TEST</p>
+                <h3>製造し、動作を確かめる</h3>
+                <p>
+                  設計をもとに実装し、評価・結合テストを通じて期待どおりに動作するか確認します。
+                </p>
+              </div>
+            </li>
+            <li>
+              <span>04</span>
+              <div>
+                <p>PRESENT</p>
+                <h3>成果を分かりやすく伝える</h3>
+                <p>
+                  制作物の目的、工夫、学んだことを整理し、成果物としてプレゼンテーションします。
+                </p>
+              </div>
+            </li>
+          </ol>
+          <div class="portfolio-note reveal">
+            <p class="eyebrow">PORTFOLIO NOTE</p>
+            <h3>総合演習の制作物</h3>
+            <p>
+              制作物名：フローチャート<br>
+              使用技術：JavaScript<br>
+              工夫した点：マウスのみでの操作<br>
+              今後改善したい点：AIの活用のしすぎで<br>
+              公開先：GitHubなどのURL（準備中）
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section evidence" id="evidence" aria-labelledby="evidence-title">
+        <div class="section-heading reveal">
+          <p class="eyebrow">05 / LEARNING EVIDENCE</p>
+          <h2 id="evidence-title">言葉だけでなく、<br />学習の記録で伝える。</h2>
+          <p class="section-intro">ここには、本人が確認できる事実を追加します。完成した作品だけでなく、つまずいた点や改善した過程も、現在の理解度を伝える大切な材料です。</p>
+        </div>
+        <div class="evidence-grid">
+          <article class="evidence-card reveal"><span>01</span><h3>制作したもの</h3><p>フローチャート制作（JavaScript）<br>マウスのみでの操作を実装</p><small>画面やコードを公開できる場合は、画像やGitHubのURLを追加します。</small></article>
+          <article class="evidence-card reveal"><span>02</span><h3>つまずきと解決</h3><p>演習中のエラーに対し、原因を特定するためにログ出力やデバッガを活用。小さな単位で動作確認を繰り返し、修正箇所を絞り込んで解決。</p><small>「問題解決力がある」と書かず、実際の過程を短く説明します。</small></article>
+          <article class="evidence-card reveal"><span>03</span><h3>現在の学習</h3><p>Spring Frameworkの学習を継続中。Pythonでのインベーダーゲーム開発を通じて、実践的なコード構成を学習。学んだことを記録して理解を深めています。</p><small>継続している頻度や期間は、事実として確認できる場合だけ記載します。</small></article>
+          <article class="evidence-card reveal"><span>04</span><h3>最初に担当したい仕事</h3><p>テスト、データ確認、簡単な修正や実装など、基礎を活かせる業務から正確に取り組みたいと考えています。</p><small>応募先の業務内容に合わせて、希望する仕事を調整します。</small></article>
+        </div>
+      </section>
+
+      <section
+        class="section message"
+        id="message"
+        aria-labelledby="message-title"
+      >
+        <div class="message-panel reveal">
+          <p class="eyebrow">06 / MESSAGE</p>
+          <h2 id="message-title">
+            最初から大きく見せず、<br />一つずつ任せてもらえる人へ。
+          </h2>
+          <div class="message-copy">
+            <p>
+              実務経験はありません。そのため、現時点で即戦力だとは考えていません。まずは仕様や手順を確認し、分からない点を整理して相談しながら、任された作業を正確に完了することを目標にします。
+            </p>
+            <p>
+              職業訓練で学んだJava、Python、SQL、Webの基礎を出発点に、テストや簡単な修正・実装から経験を積みます。教わったことを次の作業に活かし、少しずつ担当できる範囲を広げたいと考えています。
+            </p>
+          </div>
+          <div class="message-footer">
+            <p class="signature">Keep learning, keep building.</p>
+            <a class="button button-primary" href="#top"
+              >ページの先頭へ <span aria-hidden="true">↑</span></a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>御福 巡 <span>Junior Programmer</span></p>
+      <p>
+        学習内容の参照：<a
+          href="https://www.heatwavenet.co.jp/job_training/java-python/"
+          target="_blank"
+          rel="noreferrer"
+          >ヒートウェーブ公式カリキュラム</a
+        >
+      </p>
+      <p>© <span data-year></span> 御福 巡</p>
+    </footer>
+  </body>
+</html>
