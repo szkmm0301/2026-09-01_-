@@ -51,7 +51,8 @@
     <li><b>ホイール</b>:拡大 / 縮小</li>
     <li><b>中ボタンドラッグ</b>:画面の移動(クリックだけだと選択中を削除)</li>
     <li><b>右ドラッグ</b>:矢印を作成</li>
-    <li><b>右クリック(素早く2回)</b>:図形モード切替</li>
+    <li><b>右クリック(素早く2回)</b>:図形モード切替
+      <br>図形の上なら 固定(Lock)/解除。固定中は移動・リサイズ不可で、その上でも新規作成できます(薄グレー下地で表示)</li>
     <li><b>ダブルクリック</b>:文字入力(既存の文字は編集)</li>
     <li><b>画像の追加</b>:画像ファイルをキャンバスへドロップ(移動・リサイズ・保存も可能)</li>
     <li><kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd>/<kbd>4</kbd>:四角 / ひし形 / 丸 / ピル</li>
@@ -89,6 +90,7 @@ let caret={x:0,y:0};      // 新規文字の入力開始位置(ワールド座�
 let editingText=null;     // 編集中の文字オブジェクト
 let arrowDrawn=false;     // 今回の右ボタンで矢印を描いたか(ダブルクリック判定用)
 let lastRightDown=0;      // 前回右ボタンを押した時刻(ms)
+let clipboard=null;       // Ctrl+C でコピーした図形(選択+子要素)。Ctrl+V でマウス位置に貼り付け
 const undoStack=[],redoStack=[]; // 操作履歴(Ctrl+Z / Ctrl+Y)
 
 /* ==================== 基本ユーティリティ ==================== */
@@ -147,15 +149,16 @@ function hits(s,x,y){ // 点がオブジェクトに当たっているか
   return Math.hypot(x-(s.x1+t*dx),y-(s.y1+t*dy))<LINE_HIT/app.zoom;
 }
 
-function pick(x,y){ // カーソル下のオブジェクト(面積最小優先・同点は手前)
+function pick(x,y,includeLocked){ // カーソル下のオブジェクト(面積最小優先・同点は手前)
   let best=null,bestArea=Infinity;
   for(let i=app.shapes.length-1;i>=0;i--){
     const s=app.shapes[i];
+    if(s.locked&&!includeLocked)continue; // 固定(Lock)図形は左操作の対象外
     if(!hits(s,x,y))continue;
     let area;
     if(s.type==="arrow")area=Math.max(Math.hypot(s.x2-s.x1,s.y2-s.y1),LINE_HIT)*60;
     else{const b=bounds(s);area=b.w*b.h}
-    if(area<=bestArea){best=s;bestArea=area}
+    if(area<bestArea){best=s;bestArea=area} // 同点は手前(先に見つけた方)が優先
   }
   return best;
 }
@@ -276,15 +279,21 @@ function clearLocal(){
   }
 }
 
+function saveDateName(){ // 保存ファイル名用の日付(YYYY-MM-DD)
+  const d=new Date();
+  const p=n=>String(n).padStart(2,"0");
+  return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());
+}
+
 function saveJsonFile(){
   try{
     const blob=new Blob([JSON.stringify(snapshot(),null,2)],{type:"application/json"});
     const link=document.createElement("a");
     link.href=URL.createObjectURL(blob);
-    link.download="flowchart.json";
+    link.download="flowchart-"+saveDateName()+".json";
     link.click();
     setTimeout(()=>URL.revokeObjectURL(link.href),1000);
-    note("JSONファイルを保存しました");
+    note("JSONファイルを保存しました("+link.download+")");
   }catch(e){note("保存に失敗しました")}
 }
 
@@ -325,6 +334,30 @@ function outlinePath(s){
     ctx.arc(s.x+r,axisY,r,Math.PI/2,Math.PI*1.5);
   }else return;
   ctx.closePath();ctx.stroke();
+}
+
+function fillLockedBase(s){ // 固定(Lock)図形の薄グレー下地(図形本体の下に引く)
+  ctx.beginPath();
+  if(s.type==="rect")ctx.rect(s.x,s.y,s.w,s.h);
+  else if(s.type==="diamond"){
+    ctx.moveTo(s.x+s.w/2,s.y);
+    ctx.lineTo(s.x+s.w,s.y+s.h/2);
+    ctx.lineTo(s.x+s.w/2,s.y+s.h);
+    ctx.lineTo(s.x,s.y+s.h/2);
+  }else if(s.type==="circle")ctx.ellipse(s.x+s.w/2,s.y+s.h/2,s.w/2,s.h/2,0,0,Math.PI*2);
+  else if(s.type==="pill"){
+    const r=Math.min(s.w,s.h)/2,axisY=s.y+s.h/2,right=s.x+s.w-r;
+    ctx.moveTo(s.x+r,s.y);
+    ctx.lineTo(right,s.y);
+    ctx.arc(right,axisY,r,-Math.PI/2,Math.PI/2);
+    ctx.lineTo(s.x+r,s.y+s.h);
+    ctx.arc(s.x+r,axisY,r,Math.PI/2,Math.PI*1.5);
+  }else{ // 文字・画像・矢印は外接矩形
+    const b=bounds(s);
+    ctx.rect(b.x,b.y,b.w,b.h);
+  }
+  ctx.closePath();
+  ctx.fill();
 }
 
 function drawArrow(x1,y1,x2,y2){ // 線+終端の矢頭
@@ -410,6 +443,9 @@ function render(){
   ctx.translate(app.panX,app.panY);
   ctx.scale(app.zoom,app.zoom);
 
+  ctx.fillStyle="rgba(128,128,128,.13)"; // 固定(Lock)中: 図形の下に薄グレーの下地
+  for(const s of app.shapes)if(s.locked)fillLockedBase(s);
+
   for(const s of app.shapes)drawShape(s);
 
   if(app.selected&&app.selected.type==="arrow"){ // 影響範囲と配下文字の中心点を表示
@@ -460,6 +496,39 @@ addEventListener("keydown",e=>{
 
   if((e.ctrlKey||e.metaKey)&&k==="z"){e.preventDefault();e.shiftKey?redo():undo();return}
   if((e.ctrlKey||e.metaKey)&&k==="y"){e.preventDefault();redo();return}
+
+  if((e.ctrlKey||e.metaKey)&&k==="c"){ // 選択中と中のオブジェクトをまとめてコピー
+    e.preventDefault();
+    if(!app.selected)return note("コピーする図形を選択してください");
+    clipboard=JSON.parse(JSON.stringify([app.selected,...children(app.selected)].map(serializeShape)));
+    note("コピーしました("+clipboard.length+"個)");
+    return;
+  }
+  if((e.ctrlKey||e.metaKey)&&k==="v"){ // マウス先端を中心に貼り付け
+    e.preventDefault();
+    if(!clipboard||!clipboard.length)return note("コピーがありません");
+    let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+    for(const s of clipboard){ // コピー内容の中心を計算
+      const b=bounds(s);
+      minX=Math.min(minX,b.x);minY=Math.min(minY,b.y);
+      maxX=Math.max(maxX,b.x+b.w);maxY=Math.max(maxY,b.y+b.h);
+    }
+    const dx=app.mx-(minX+maxX)/2,dy=app.my-(minY+maxY)/2;
+    pushHistory();
+    const added=[];
+    for(const s of clipboard){
+      const c=JSON.parse(JSON.stringify(s));
+      if(c.type==="arrow"){c.x1+=dx;c.y1+=dy;c.x2+=dx;c.y2+=dy}
+      else c.x+=dx,c.y+=dy;
+      delete c.img; // 画像は実行時キャッシュを外してsrcから再読込
+      app.shapes.push(c);
+      added.push(c);
+    }
+    app.selected=added[0]; // 貼り付けた主オブジェクトを選択
+    note("貼り付けました("+added.length+"個)");
+    render();
+    return;
+  }
 
   if(k==="1")setMode("rect");
   else if(k==="2")setMode("diamond");
@@ -516,17 +585,55 @@ cv.addEventListener("wheel",e=>{
   app.panY=e.clientY-(e.clientY-app.panY)*factor;
   app.zoom*=factor;
   render();
-},{passive:false});
+}, {passive:false});
+
+/* ==================== パン(中ドラッグ)のエッジスクロール ====================
+   カーソルが画面端に達して止まっていても、rAF ループが同じ向きの
+   スクロールを続ける(端に近いほど速く、最速は PAN_SPEED px/秒)。 */
+const PAN_EDGE=60;        /* 画面端からこの距離内で自動スクロール */
+const PAN_SPEED=900;      /* 端での最大速度(px/秒) */
+function panEdgeV(cx,cy){ /* カーソル位置からスクロール速度 */
+  const v=(pos,size)=>{
+    if(pos<PAN_EDGE)return -Math.min(PAN_SPEED,PAN_SPEED*(PAN_EDGE-pos)/PAN_EDGE);
+    if(pos>size-PAN_EDGE)return Math.min(PAN_SPEED,PAN_SPEED*(pos-(size-PAN_EDGE))/PAN_EDGE);
+    return 0;
+  };
+  return {vx:v(cx,cv.width),vy:v(cy,cv.height)};
+}
+window.FCPan={edgeVelocity:panEdgeV};   /* 検証用 */
+
+let panRaf=0,panPrevT=0;
+function panTick(t){
+  if(!drag||drag.type!=="pan")return; /* パン終了で自然に止まる */
+  const dt=Math.min(0.05,(t-panPrevT)/1000);panPrevT=t;
+  const ev=panEdgeV(drag.lastX,drag.lastY);
+  if(ev.vx||ev.vy){app.panX+=ev.vx*dt;app.panY+=ev.vy*dt;render();}
+  panRaf=requestAnimationFrame(panTick);
+}
 
 /* ==================== イベント:マウス ==================== */
 cv.addEventListener("mousedown",e=>{
   const p=toWorld(e.clientX,e.clientY);
 
-  if(e.button===2){ // 右:素早く2回でモード切替/ドラッグで矢印作成
+  if(e.button===2){ // 右:素早く2回で Lock/解除(図形の上) か モード切替(空き)
     const now=Date.now();
     if(!arrowDrawn&&now-lastRightDown<300){
-      setMode(MODES[(MODES.indexOf(app.mode)+1)%MODES.length]);
       lastRightDown=0;
+      const hit=pick(p.x,p.y,true); // 固定図形も含めて判定
+      if(hit){ // 図形の上: 固定(Lock)/解除。固定中は移動・リサイズ不可
+        pushHistory();
+        if(hit.locked){
+          hit.locked=false;   // 解除(選択は維持)
+          app.selected=hit;
+          note("ロックを解除しました");
+        }else{
+          hit.locked=true;    // 固定(選択を外す)
+          if(app.selected===hit)app.selected=null;
+          note("ロックしました(移動・リサイズ不可、上で新規作成OK)");
+        }
+      }else{ // 空き: 今までどおり図形モード切替
+        setMode(MODES[(MODES.indexOf(app.mode)+1)%MODES.length]);
+      }
       render();
       return;
     }
@@ -536,15 +643,17 @@ cv.addEventListener("mousedown",e=>{
     return;
   }
 
-  if(e.button===1){ // 中:画面の移動
+  if(e.button===1){ // 中:画面の移動(端ではエッジスクロールで継続)
     e.preventDefault();
-    drag={type:"pan",sx:e.clientX,sy:e.clientY,px:app.panX,py:app.panY,moved:false};
+    drag={type:"pan",sx:e.clientX,sy:e.clientY,lastX:e.clientX,lastY:e.clientY,moved:false};
+    panPrevT=0;
+    panRaf=requestAnimationFrame(panTick);
     return;
   }
 
   if(e.button!==0)return;
 
-  if(app.selected){ // ハンドル操作を最優先
+  if(app.selected&&!app.selected.locked){ // ハンドル操作を最優先(固定中は不可)
     const handle=handleAt(app.selected,p.x,p.y);
     if(handle){
       drag={type:"resize",target:app.selected,handle,
@@ -568,6 +677,13 @@ cv.addEventListener("mousedown",e=>{
   drag={type:"create",sx:p.x,sy:p.y,cx:p.x,cy:p.y};   // 図形作成開始
 });
 
+/* 中ドラッグ(パン)中はポインタを捕捉し、カーソルが画面外へ出ても移動を継続する */
+cv.addEventListener("pointerdown",e=>{
+  if(e.button===1){
+    try{cv.setPointerCapture(e.pointerId);}catch(err){/* 捕捉できない環境でも動作 */}
+  }
+});
+
 cv.addEventListener("mousemove",e=>{
   const p=toWorld(e.clientX,e.clientY);
   app.mx=p.x;app.my=p.y;
@@ -582,9 +698,10 @@ cv.addEventListener("mousemove",e=>{
 
   switch(drag.type){
     case "pan":
-      if(Math.abs(e.clientX-drag.sx)>4||Math.abs(e.clientY-drag.sy)>4)drag.moved=true;
-      app.panX=drag.px+e.clientX-drag.sx;
-      app.panY=drag.py+e.clientY-drag.sy;
+      if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>4)drag.moved=true;
+      app.panX+=e.clientX-drag.lastX;
+      app.panY+=e.clientY-drag.lastY;
+      drag.lastX=e.clientX;drag.lastY=e.clientY;
       break;
     case "arrow":
       drag.x2=p.x;drag.y2=p.y;
@@ -611,6 +728,7 @@ cv.addEventListener("mousemove",e=>{
 
 function applyResize(p){ // ドラッグ中のリサイズを反映
   const s=drag.target,o=drag.g0;
+  if(s.locked)return; // 固定(Lock)中はリサイズ不可
   drag.changed=true;
 
   if(s.type==="arrow"){ // 端点を直接動かす
